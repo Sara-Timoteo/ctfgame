@@ -1,0 +1,175 @@
+/* CTF.EXE — folha de estilo.
+   Consola de gestão dos anos 90: azul saturado, âmbar, uma família mono. */
+
+:root {
+  --fundo:        #071440;
+  --painel:       #0E2470;
+  --painel-alto:  #16358F;
+  --ciano:        #4FD1E8;
+  --ambar:        #FFC02E;
+  --creme:        #E9E6DA;
+  --sombra:       #8FA3D8;
+  --certo:        #6FE39B;
+  --errado:       #FF7B8A;
+  --mono: "JetBrains Mono", "Cascadia Mono", "SF Mono", "DejaVu Sans Mono",
+          Consolas, "Liberation Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0; padding: 0; min-height: 100%;
+  background: var(--fundo); color: var(--creme);
+  font-family: var(--mono); font-size: 15px; line-height: 1.55;
+}
+body {
+  padding: 1.5rem; display: flex; justify-content: center;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem 1.5rem;
+}
+
+/* ── Arranque ───────────────────────────────────────────────────── */
+.arranque {
+  position: fixed; inset: 0; background: var(--fundo);
+  display: flex; align-items: center; justify-content: center; z-index: 10;
+}
+.linhas-arranque {
+  margin: 0; color: var(--ciano); font-size: 0.95rem; white-space: pre;
+}
+.linhas-arranque::after {
+  content: "\2588"; color: var(--ambar);
+  animation: piscar 1s steps(2, end) infinite;
+}
+@keyframes piscar { 50% { opacity: 0; } }
+
+/* ── Janela ─────────────────────────────────────────────────────── */
+.moldura {
+  width: 100%; max-width: 64rem;
+  border: 3px double var(--ciano); background: var(--painel);
+  display: flex; flex-direction: column;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.45);
+}
+.barra-menu {
+  background: var(--ciano); color: #04102F;
+  padding: 0.2rem 0.9rem; display: flex; align-items: baseline; gap: 0.8rem;
+  font-weight: 700; letter-spacing: 0.08em;
+}
+.versao { font-weight: 400; opacity: 0.75; }
+.botao-instalar {
+  font: inherit; font-weight: 700; cursor: pointer;
+  background: #04102F; color: var(--ambar);
+  border: 2px solid #04102F; padding: 0 0.6rem;
+}
+.botao-instalar:hover { background: var(--fundo); }
+.destinatario { margin-left: auto; font-weight: 400; letter-spacing: 0; }
+
+.corpo { display: grid; grid-template-columns: 16rem 1fr; min-height: 32rem; }
+
+/* ── Índice ─────────────────────────────────────────────────────── */
+.indice {
+  border-right: 3px double var(--ciano); padding: 1rem 0.9rem;
+  display: flex; flex-direction: column;
+}
+.cabecalho-indice {
+  margin: 0 0 0.8rem; font-size: 0.95rem; font-weight: 400;
+  color: var(--ambar); letter-spacing: 0.18em;
+}
+.lista-desafios {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+.item-desafio {
+  width: 100%; text-align: left; background: none; border: none;
+  color: var(--creme); font: inherit; padding: 0.25rem 0.5rem;
+  cursor: pointer; display: flex; gap: 0.55rem; align-items: baseline;
+}
+.item-desafio:hover { background: var(--painel-alto); }
+.item-desafio[aria-current="true"] {
+  background: var(--ambar); color: #04102F; font-weight: 700;
+}
+.numero { color: var(--sombra); }
+.item-desafio[aria-current="true"] .numero { color: #04102F; }
+.marca { color: var(--sombra); margin-left: auto; }
+.item-desafio.feito .marca { color: var(--certo); }
+.item-desafio[aria-current="true"] .marca { color: #04102F; }
+.progresso { margin-top: auto; padding-top: 1.2rem; color: var(--sombra); font-size: 0.85rem; }
+.estado-rede { margin: 0.3rem 0 0; color: var(--sombra); font-size: 0.8rem; }
+
+/* ── Palco ──────────────────────────────────────────────────────── */
+.palco { padding: 1.4rem 1.6rem 1.6rem; display: flex; flex-direction: column; gap: 0.85rem; }
+.titulo-desafio {
+  margin: 0; font-size: 1.4rem; font-weight: 700; line-height: 1.25;
+  color: var(--ambar); max-width: 34ch;
+}
+.codinome { margin: 0; color: var(--ciano); letter-spacing: 0.3em; font-size: 0.8rem; }
+.enunciado { margin: 0; white-space: pre-wrap; max-width: 72ch; }
+.carga {
+  display: flex; align-items: flex-start; gap: 0.8rem;
+  background: #04102F; border-left: 4px solid var(--ambar); padding: 0.7rem 0.9rem;
+}
+.carga-texto { margin: 0; flex: 1; color: var(--ciano); word-break: break-all; white-space: pre-wrap; }
+
+.botao-copiar, .botao-enviar, .tecla {
+  font: inherit; cursor: pointer; border: 2px solid var(--ciano);
+  background: var(--painel-alto); color: var(--creme); padding: 0.15rem 0.7rem;
+}
+.botao-copiar:hover, .botao-enviar:hover { background: var(--ciano); color: #04102F; }
+:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
+
+.pistas { display: flex; flex-direction: column; gap: 0.4rem; }
+.pista {
+  margin: 0; padding: 0.45rem 0.8rem; background: var(--painel-alto);
+  border-left: 4px solid var(--sombra); max-width: 72ch; font-size: 0.92rem;
+}
+
+.linha-entrada {
+  margin-top: auto; display: flex; align-items: center; gap: 0.6rem;
+  border-top: 3px double var(--ciano); padding-top: 1rem;
+}
+.rotulo-entrada { color: var(--ambar); }
+.entrada {
+  flex: 1; font: inherit; background: #04102F; color: var(--creme);
+  border: 2px solid var(--sombra); padding: 0.3rem 0.6rem; min-width: 0;
+}
+.entrada::placeholder { color: #5C6E9E; }
+.veredicto { margin: 0; min-height: 1.5rem; }
+.veredicto.certo  { color: var(--certo); }
+.veredicto.errado { color: var(--errado); }
+
+/* ── Barra de estado ────────────────────────────────────────────── */
+.barra-estado {
+  border-top: 3px double var(--ciano); padding: 0.35rem 0.8rem;
+  display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; background: var(--painel);
+}
+.tecla { border-width: 0; background: none; padding: 0.1rem 0.4rem; }
+.tecla .f { color: #04102F; background: var(--ciano); padding: 0 0.3rem; }
+.tecla:hover { background: var(--painel-alto); color: var(--creme); }
+#tecla-reset { margin-left: auto; color: var(--sombra); }
+#tecla-reset:hover { color: var(--errado); }
+#descarregar { color: var(--ambar); }
+#descarregar:hover { background: var(--ambar); color: #04102F; }
+
+/* ── Final ──────────────────────────────────────────────────────── */
+.final {
+  max-width: 64rem; width: 100%;
+  border: 3px double var(--ambar); background: var(--painel);
+  padding: 2rem; text-align: center;
+}
+.bolo { margin: 0 0 1.2rem; color: var(--ambar); }
+.mensagem-final {
+  margin: 0 auto; white-space: pre-wrap; text-align: left;
+  max-width: 58ch; font-size: 1.05rem;
+}
+.assinatura { margin: 1.6rem 0 0; color: var(--ciano); }
+
+/* ── Ecrãs estreitos ────────────────────────────────────────────── */
+@media (max-width: 48rem) {
+  body { padding: 0.6rem; padding-top: max(0.6rem, env(safe-area-inset-top)); }
+  .corpo { grid-template-columns: 1fr; }
+  .indice { border-right: none; border-bottom: 3px double var(--ciano); }
+  .progresso { padding-top: 0.6rem; }
+  .palco { padding: 1rem; }
+  .titulo-desafio { font-size: 1.12rem; }
+  .linha-entrada { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { .linhas-arranque::after { animation: none; } }

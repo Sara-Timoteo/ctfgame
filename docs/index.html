@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CTF.EXE</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#071440">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CTF.EXE">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
+<link rel="icon" href="icones/icone-192.png">
+
+<link rel="stylesheet" href="estilo.css">
+<!--
+    Boa. Já estás no código-fonte.
+    Não escondi respostas aqui — a validação é por hash e os segredos
+    vivem no service worker (sw.js), que é o que vais atacar.
+    O desafio 1 agradece a tua curiosidade.
+-->
+</head>
+<body>
+
+<div id="arranque" class="arranque">
+  <pre id="linhas-arranque" class="linhas-arranque" aria-live="polite"></pre>
+</div>
+
+<main class="moldura" id="moldura" hidden>
+
+  <header class="barra-menu">
+    <span class="nome-programa">CTF.EXE</span>
+    <span class="versao">v2.1 · pwa</span>
+    <button class="botao-instalar" id="instalar" type="button" hidden>Instalar</button>
+    <span class="destinatario" id="destinatario"></span>
+  </header>
+
+  <div class="corpo">
+
+    <nav class="indice" aria-label="Lista de desafios">
+      <h2 class="cabecalho-indice">Desafios</h2>
+      <ul id="lista-desafios" class="lista-desafios"></ul>
+      <p class="progresso" id="progresso"></p>
+      <p class="estado-rede" id="estado-rede"></p>
+    </nav>
+
+    <section class="palco" aria-live="polite">
+      <h1 class="titulo-desafio" id="titulo-desafio"></h1>
+      <p class="codinome" id="codinome"></p>
+
+      <pre class="enunciado" id="enunciado"></pre>
+
+      <div class="carga" id="carga-caixa" hidden>
+        <pre class="carga-texto" id="carga-texto"></pre>
+        <button class="botao-copiar" id="copiar" type="button">Copiar</button>
+      </div>
+
+      <div class="pistas" id="pistas"></div>
+
+      <div class="linha-entrada">
+        <label class="rotulo-entrada" for="resposta">resposta</label>
+        <input id="resposta" class="entrada" type="text" autocomplete="off"
+               spellcheck="false" placeholder="CTF{...}">
+        <button class="botao-enviar" id="enviar" type="button">Validar</button>
+      </div>
+
+      <p class="veredicto" id="veredicto" role="status"></p>
+    </section>
+
+  </div>
+
+  <footer class="barra-estado">
+    <button class="tecla" id="tecla-pista" type="button"><span class="f">F1</span> Pista</button>
+    <button class="tecla" id="tecla-anterior" type="button"><span class="f">F2</span> Anterior</button>
+    <button class="tecla" id="tecla-seguinte" type="button"><span class="f">F3</span> Seguinte</button>
+    <button class="tecla" id="descarregar" type="button">Descarregar .zip</button>
+    <button class="tecla" id="tecla-reset" type="button">Recomeçar</button>
+  </footer>
+
+</main>
+
+<div class="final" id="final" hidden>
+  <pre class="bolo" id="bolo"></pre>
+  <pre class="mensagem-final" id="mensagem-final"></pre>
+  <p class="assinatura" id="assinatura"></p>
+</div>
+
+<script src="jogo.js"></script>
+</body>
+</html>
