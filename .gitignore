@@ -1,0 +1,7 @@
+# spoilers — não publicar
+solucoes/
+
+# lixo
+__pycache__/
+*.pyc
+.DS_Store
