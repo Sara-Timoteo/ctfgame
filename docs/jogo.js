@@ -8,7 +8,7 @@
   "use strict";
 
   // ── PERSONALIZA: nome, mensagem e assinatura ────────────────────
-  var NOME = "Colega";
+  var NOME = "Diogo Anastácio";
   var MENSAGEM_FINAL =
     "Oito desafios, zero exploits contra mim: bem jogado.\n\n" +
     "Fizeste recon a um robots.txt, leste um cabeçalho que ninguém lê,\n" +
@@ -28,26 +28,27 @@
       enunciado:
         "Todo o site publica um /robots.txt. Quem escreve essas regras\n" +
         "costuma listar exactamente aquilo que preferia esconder.\n\n" +
-        "Abre  ./robots.txt  e segue o rasto até à bandeira.",
+        "Abre a consola (F4) e faz  get /robots.txt . Segue o rasto.\n" +
+        "(Podes na mesma abri-lo no browser, se preferires.)",
       hash: "c424e7880be05a121b7267b91729abcfa564ed7dc9a2d5ae535d680c4ea6bf3f",
       pistas: [
         "Um robots.txt tem linhas Disallow. Cada uma é um caminho no servidor.",
-        "O caminho proibido é uma pasta. Espreita lá dentro pelo browser.",
-        "Vai a ./backup-nsm/notas-migracao.txt",
+        "O caminho proibido é uma pasta/ficheiro. Na consola:  get <esse-caminho>",
+        "Faz  get /backup-nsm/notas-migracao.txt",
       ],
     },
     {
       id: 2, codinome: "CABECALHOS",
       titulo: "Nem tudo vem no corpo da resposta",
       enunciado:
-        "Há um endpoint tranquilo em  ./api/ola  que responde um JSON\n" +
+        "Há um endpoint tranquilo em  /api/ola  que responde um JSON\n" +
         "sem graça. Mas uma resposta HTTP é mais do que o corpo.\n\n" +
-        "Inspecciona os cabeçalhos da resposta e traz a bandeira.",
+        "Na consola (F4):  headers /api/ola  — e lê o que vem no topo.",
       hash: "bf140bb0ddfdc84b7ca54034f7e2ce8065db6cf714ee27440efd5936735689f7",
       pistas: [
-        "Abre as DevTools (F12) → separador Rede/Network, recarrega e clica no pedido a /api/ola.",
-        "Olha os Response Headers. Há um cabeçalho que não devia lá estar: começa por X-.",
-        "Na consola: fetch('./api/ola').then(r => r.headers.get('X-Bandeira')).then(console.log)",
+        "Faz  headers /api/ola  na consola e percorre a lista de cabeçalhos.",
+        "Há um cabeçalho que não devia lá estar: começa por X-.",
+        "O valor desse cabeçalho X- é a própria bandeira.",
       ],
     },
     {
@@ -76,7 +77,7 @@
       carga: "CTF{nmmvrhfw_zkeghi_g_gkjeu}",
       hash: "56b178d97ddec2c4e254e63b3736369fcb113f61b509dd7ce7dabbb725f7b939",
       pistas: [
-        "É Vigenère. Só rodam as letras a-z; chavetas e underscores ficam na mesma.",
+        "É Vigenère, e só o interior de CTF{...} foi cifrado — o 'CTF' e as chavetas ficaram intactos. Decifra só o miolo; underscores contam como separadores, não gastam chave.",
         "A palavra-chave tem 7 letras e é, literalmente, SEGREDO.",
         "Decifrar = subtrair o deslocamento de cada letra da chave (A=0, B=1, ...). Há decifradores online se preferires confirmar.",
       ],
@@ -85,22 +86,22 @@
       id: 5, codinome: "COFRE",
       titulo: "O cofre sem tentativas limitadas",
       enunciado:
-        "O cofre está em  ./api/pin  e valida um código de 4 dígitos.\n" +
-        "Mas primeiro exige uma sessão: pede um token a  ./api/sessao .\n\n" +
+        "O cofre está em  /api/pin  e valida um código de 4 dígitos.\n" +
+        "Mas primeiro exige uma sessão: pede um token a  /api/sessao .\n\n" +
         "Depois é força bruta — não há bloqueio, não há atraso, não há captcha.\n" +
-        "10 000 hipóteses. Escreve o script e abre o cofre.",
+        "10 000 hipóteses. Automatiza e abre o cofre.",
       hash: "908163328dfacefec53cf4ca9472a1392f107c2ed1b56a86043d82175e5cf4dd",
       pistas: [
-        "Passo 1: token = (await (await fetch('./api/sessao')).json()).token",
-        "Passo 2: para cada n de 0 a 9999, fetch('./api/pin?token='+token+'&codigo='+String(n).padStart(4,'0'))",
-        "Quando a resposta trouxer {aberto:true, bandeira:...}, é essa a bandeira. (Também dá para atacar em Python contra o servidor.py — vê a pasta solucoes.)",
+        "Primeiro espreita:  get /api/sessao  (traz um token) e  get /api/pin  (diz o que espera).",
+        "O pin quer  ?token=<token>&codigo=<4-dígitos> . São só 10 000 hipóteses.",
+        "A consola tem um atalho:  pin /api/pin /api/sessao  — percorre tudo por ti. (Ou escreve o teu ciclo, ou ataca o servidor.py em Python.)",
       ],
     },
     {
       id: 6, codinome: "SQLI",
       titulo: "A consulta que acredita no que lhe escrevem",
       enunciado:
-        "Há um login em  ./api/login?utilizador=...&senha=...  que monta a\n" +
+        "Há um login em  /api/login?utilizador=...&senha=...  que monta a\n" +
         "consulta à moda antiga, colando texto:\n\n" +
         "    SELECT * FROM utilizadores\n" +
         "    WHERE utilizador='...' AND senha='...'\n\n" +
@@ -109,14 +110,14 @@
       pistas: [
         "As aspas do teu texto entram directas na consulta. E se fechasses a aspa tu próprio?",
         "Dois clássicos: no utilizador  admin'--  (comenta o resto da linha), ou na senha  ' OR '1'='1 .",
-        "Na consola: fetch(\"./api/login?utilizador=\"+encodeURIComponent(\"admin'--\")+\"&senha=x\").then(r=>r.json()).then(console.log)",
+        "Na consola (F4):  get /api/login?utilizador=admin'--&senha=x",
       ],
     },
     {
       id: 7, codinome: "JWT",
       titulo: "Um token que se acredita a si próprio",
       enunciado:
-        "O painel  ./api/admin  aceita um JWT no cabeçalho\n" +
+        "O painel  /api/admin  aceita um JWT no cabeçalho\n" +
         "  Authorization: Bearer <token> .\n\n" +
         "Tens um token de convidado (em baixo). O servidor tem uma falha\n" +
         "clássica: confia no campo 'alg' do próprio token. Forja um que\n" +
@@ -129,7 +130,7 @@
       pistas: [
         "Um JWT é  base64url(cabeçalho).base64url(carga).assinatura . Descodifica as duas primeiras partes e lê o JSON.",
         "A falha é 'alg:none': se o cabeçalho disser {\"alg\":\"none\"}, o servidor aceita sem assinatura. Muda também role para admin.",
-        "Monta:  h=btoa('{\"alg\":\"none\",\"typ\":\"JWT\"}'); p=btoa('{\"user\":\"eu\",\"role\":\"admin\"}');  passa a base64url (troca +/ por -_, tira '='), junta com um ponto final e assinatura vazia:  h+'.'+p+'.'  e envia no header Authorization.",
+        "Constrói as duas partes em base64url — {\"alg\":\"none\",\"typ\":\"JWT\"} e uma carga com role:admin — junta-as com um ponto e deixa a assinatura vazia (o token acaba num ponto). Depois envia na consola:  curl /api/admin -H \"Authorization: Bearer <o-teu-token>\"",
       ],
     },
     {
@@ -139,13 +140,13 @@
         "Encontrámos este SHA-256 numa base de dados, sem sal nenhum:\n\n" +
         "    d93449f3e5b4bc1fb096a29c2fe7cb71b2694f1436f738741c35950fdb36fbaf\n\n" +
         "A palavra original está na lista que o jogo serve em\n" +
-        "./lista-palavras.txt . Descobre qual é.\n" +
+        "/lista-palavras.txt . Descobre qual é.\n" +
         "(A resposta é a palavra, não CTF{...}.)",
       hash: "d93449f3e5b4bc1fb096a29c2fe7cb71b2694f1436f738741c35950fdb36fbaf",
       pistas: [
-        "Ataque de dicionário: percorre a lista, calcula o SHA-256 de cada palavra, compara com o alvo.",
-        "Em JS (consola): fetch('./lista-palavras.txt').then(r=>r.text()).then(async t=>{ for(const p of t.split('\\n')){ const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p.trim())))].map(x=>x.toString(16).padStart(2,'0')).join(''); if(h==='d93449f3e5b4bc1fb096a29c2fe7cb71b2694f1436f738741c35950fdb36fbaf'){console.log(p.trim());break;} } })",
-        "A palavra está toda em minúsculas. Cuidado com o \\n no fim de cada linha — usa .trim().",
+        "Ataque de dicionário: percorre a lista, calcula o SHA-256 de cada palavra, compara com o alvo. Espreita-a com  get /lista-palavras.txt .",
+        "A consola faz o resumo de qualquer texto:  sha256 <palavra>  — e o alvo é o hash do enunciado.",
+        "Ou deixa-a correr tudo:  crack d93449f3e5b4bc1fb096a29c2fe7cb71b2694f1436f738741c35950fdb36fbaf /lista-palavras.txt",
       ],
     },
   ];
@@ -161,18 +162,22 @@
    "progresso","estado-rede","titulo-desafio","codinome","enunciado","carga-caixa",
    "carga-texto","copiar","pistas","resposta","enviar","veredicto","tecla-pista",
    "tecla-anterior","tecla-seguinte","tecla-reset","descarregar","final","bolo",
-   "mensagem-final","assinatura"].forEach(function (id) {
+   "mensagem-final","assinatura","abrir-consola","consola-fundo","consola",
+   "consola-fechar","consola-saida","consola-entrada","abrir-instalar",
+   "instalar-fundo","instalar-fechar","instalar-qr","instalar-url",
+   "instalar-agora"].forEach(function (id) {
     el[camel(id)] = document.getElementById(id);
   });
   function camel(s) { return s.replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); }); }
 
   var LINHAS_ARRANQUE = [
-    "CTF.EXE  v2.1  [pwa]",
+    "CTF.EXE  v3.0  [pwa]",
     "a carregar modulos ................ ok",
     "a registar service worker ......... ok",
+    "a abrir consola local (F4) ........ ok",
     "a mapear superficie de ataque ..... 8 alvos",
     "",
-    "oito desafios. modo offline pronto.",
+    "oito desafios. consola integrada. modo offline pronto.",
     "",
   ];
   var BOLO = [
@@ -369,7 +374,7 @@
 
   /* ── Descarregar a própria app num .zip (JS puro, sem bibliotecas) ─ */
   var FICHEIROS_JOGO = [
-    "index.html", "convite.html", "estilo.css", "jogo.js", "sw.js",
+    "index.html", "convite.html", "estilo.css", "jogo.js", "qr.js", "sw.js",
     "manifest.webmanifest", "lista-palavras.txt",
     "icones/icone-192.png", "icones/icone-512.png", "icones/icone-maskable-512.png",
   ];
@@ -459,7 +464,284 @@
     });
   }
 
+  /* ── Consola integrada ───────────────────────────────────────────
+     Uma shell dentro da app. Os comandos de rede (get/headers/post/curl)
+     passam por fetch(), que o service worker interceta — por isso batem
+     nos mesmos endpoints do jogo, offline e sem sair da PWA.
+     Os utilitários (b64/hex/rot/vigenere/sha256/pin/crack) são genéricos,
+     não atalhos por desafio: dão-te o canivete, não a resposta. */
+  var historico = [], posHist = -1, consolaPronta = false;
+
+  function escreverConsola(texto, classe) {
+    var linha = document.createElement("span");
+    if (classe) linha.className = classe;
+    linha.textContent = texto + "\n";
+    el.consolaSaida.appendChild(linha);
+    el.consolaSaida.scrollTop = el.consolaSaida.scrollHeight;
+  }
+
+  function abrirConsola() {
+    el.consolaFundo.hidden = false;
+    if (!consolaPronta) {
+      escreverConsola("consola CTF.EXE — tudo local, tudo offline.", "fraco");
+      escreverConsola("escreve  ajuda  para a lista de comandos.\n", "fraco");
+      consolaPronta = true;
+    }
+    setTimeout(function () { el.consolaEntrada.focus(); }, 30);
+  }
+  function fecharConsola() { el.consolaFundo.hidden = true; }
+
+  var AJUDA = [
+    "comandos de rede (batem nos endpoints do jogo):",
+    "  get <caminho>                 — corpo da resposta (ex: get /robots.txt)",
+    "  headers <caminho>             — todos os cabeçalhos da resposta",
+    "  post <caminho> <corpo>        — POST com corpo (ex: post /api/login {\"u\":\"..\"})",
+    "  curl <caminho> [-H \"K: V\"]     — pedido com cabeçalho à escolha (ex: Authorization)",
+    "",
+    "utilitários (genéricos — a técnica é tua):",
+    "  b64d <texto>   b64e <texto>    — descodificar / codificar base64",
+    "  hex <hex>                      — hex → texto",
+    "  rot <n> <texto>   rot13 <texto>— rodar o alfabeto",
+    "  vigenere <chave> <texto>       — decifrar Vigenère",
+    "  sha256 <texto>                 — resumo SHA-256",
+    "  pin <caminho-pin> <caminho-sessao> — força bruta a um cofre de 4 dígitos",
+    "  crack <hash> [<caminho-lista>] — dicionário SHA-256 (lista: /lista-palavras.txt)",
+    "",
+    "  limpar    — apaga o ecrã     |    fechar / F4 / Esc — fecha a consola",
+  ];
+
+  function classificarHttp(status) { return status >= 200 && status < 300 ? "ok" : "erro"; }
+
+  function resolverCaminho(p) {
+    if (!p) return null;
+    if (/^https?:\/\//i.test(p)) return p;          // absoluto
+    return new URL(p.replace(/^\//, "./"), location.href).href; // relativo ao scope
+  }
+
+  function cmdGet(args) {
+    var alvo = resolverCaminho(args[0]);
+    if (!alvo) return escreverConsola("uso: get <caminho>", "erro");
+    fetch(alvo).then(function (r) {
+      escreverConsola("HTTP " + r.status + " " + r.statusText, classificarHttp(r.status));
+      return r.text();
+    }).then(function (t) { escreverConsola(t.length ? t : "(corpo vazio)"); })
+      .catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+
+  function cmdHeaders(args) {
+    var alvo = resolverCaminho(args[0]);
+    if (!alvo) return escreverConsola("uso: headers <caminho>", "erro");
+    fetch(alvo).then(function (r) {
+      escreverConsola("HTTP " + r.status + " " + r.statusText, classificarHttp(r.status));
+      var houve = false;
+      r.headers.forEach(function (v, k) { escreverConsola("  " + k + ": " + v); houve = true; });
+      if (!houve) escreverConsola("  (sem cabeçalhos expostos por CORS — tenta na aba Network das DevTools)", "fraco");
+    }).catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+
+  function cmdPost(args, resto) {
+    var alvo = resolverCaminho(args[0]);
+    if (!alvo) return escreverConsola("uso: post <caminho> <corpo>", "erro");
+    var corpo = resto.slice(resto.indexOf(args[0]) + args[0].length).trim();
+    fetch(alvo, { method: "POST", body: corpo,
+      headers: { "Content-Type": "application/json" } }).then(function (r) {
+      escreverConsola("HTTP " + r.status + " " + r.statusText, classificarHttp(r.status));
+      return r.text();
+    }).then(function (t) { escreverConsola(t.length ? t : "(corpo vazio)"); })
+      .catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+
+  function cmdCurl(resto) {
+    // curl <caminho> [-H "Chave: Valor"] ...
+    var cabecalhos = {};
+    var reH = /-H\s+"([^"]+)"/g, m;
+    while ((m = reH.exec(resto))) {
+      var idx = m[1].indexOf(":");
+      if (idx > 0) cabecalhos[m[1].slice(0, idx).trim()] = m[1].slice(idx + 1).trim();
+    }
+    var semH = resto.replace(reH, "").trim();
+    var alvo = resolverCaminho(semH.split(/\s+/)[0]);
+    if (!alvo) return escreverConsola('uso: curl <caminho> [-H "Chave: Valor"]', "erro");
+    fetch(alvo, { headers: cabecalhos }).then(function (r) {
+      escreverConsola("HTTP " + r.status + " " + r.statusText, classificarHttp(r.status));
+      return r.text();
+    }).then(function (t) { escreverConsola(t.length ? t : "(corpo vazio)"); })
+      .catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+
+  function cmdB64d(resto) {
+    try { escreverConsola(decodeURIComponent(escape(atob(resto.trim())))); }
+    catch (e) { escreverConsola("base64 inválido", "erro"); }
+  }
+  function cmdB64e(resto) {
+    try { escreverConsola(btoa(unescape(encodeURIComponent(resto)))); }
+    catch (e) { escreverConsola("não deu para codificar", "erro"); }
+  }
+  function cmdHex(resto) {
+    var h = resto.replace(/[^0-9a-fA-F]/g, "");
+    if (h.length % 2) return escreverConsola("número ímpar de dígitos hex", "erro");
+    var s = "";
+    for (var i = 0; i < h.length; i += 2) s += String.fromCharCode(parseInt(h.substr(i, 2), 16));
+    try { escreverConsola(decodeURIComponent(escape(s))); } catch (e) { escreverConsola(s); }
+  }
+  function rodar(texto, n) {
+    return texto.replace(/[a-z]/g, function (c) {
+      return String.fromCharCode((c.charCodeAt(0) - 97 + n) % 26 + 97);
+    }).replace(/[A-Z]/g, function (c) {
+      return String.fromCharCode((c.charCodeAt(0) - 65 + n) % 26 + 65);
+    });
+  }
+  function cmdRot(args, resto) {
+    var n = parseInt(args[0], 10);
+    if (isNaN(n)) return escreverConsola("uso: rot <n> <texto>", "erro");
+    escreverConsola(rodar(resto.slice(resto.indexOf(args[0]) + args[0].length).trim(), ((n % 26) + 26) % 26));
+  }
+  function cmdVigenere(args, resto) {
+    var chave = (args[0] || "").toUpperCase().replace(/[^A-Z]/g, "");
+    if (!chave) return escreverConsola("uso: vigenere <chave> <texto>", "erro");
+    var texto = resto.slice(resto.indexOf(args[0]) + args[0].length).trim();
+    var j = 0, saida = texto.replace(/[a-zA-Z]/g, function (c) {
+      var maiusc = c <= "Z", base = maiusc ? 65 : 97;
+      var desloc = chave.charCodeAt(j % chave.length) - 65;
+      j++;
+      return String.fromCharCode((c.charCodeAt(0) - base - desloc + 26) % 26 + base);
+    });
+    escreverConsola(saida);
+  }
+  function hashHex(texto) {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto)).then(function (buf) {
+      return [].map.call(new Uint8Array(buf), function (x) {
+        return x.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+  function cmdSha256(resto) {
+    hashHex(resto).then(function (h) { escreverConsola(h); });
+  }
+  function cmdPin(args) {
+    var alvoPin = resolverCaminho(args[0]), alvoSessao = resolverCaminho(args[1]);
+    if (!alvoPin || !alvoSessao)
+      return escreverConsola("uso: pin <caminho-pin> <caminho-sessao>", "erro");
+    escreverConsola("a pedir sessão...", "fraco");
+    fetch(alvoSessao).then(function (r) { return r.json(); }).then(function (s) {
+      var token = s.token;
+      if (!token) { escreverConsola("não veio token da sessão", "erro"); return; }
+      escreverConsola("token: " + token + "  — a percorrer 0000–9999...", "fraco");
+      var n = 0;
+      function tentar() {
+        if (n > 9999) { escreverConsola("esgotei o espaço sem abrir", "erro"); return; }
+        var codigo = String(n).padStart(4, "0");
+        var u = alvoPin + (alvoPin.indexOf("?") < 0 ? "?" : "&") +
+                "token=" + encodeURIComponent(token) + "&codigo=" + codigo;
+        fetch(u).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && (d.aberto || d.bandeira)) {
+            escreverConsola("ABERTO com " + codigo + " → " + (d.bandeira || JSON.stringify(d)), "ok");
+          } else { n++; (n % 500 === 0) && escreverConsola("... " + n, "fraco"); tentar(); }
+        }).catch(function (e) { escreverConsola("erro em " + codigo + ": " + e.message, "erro"); });
+      }
+      tentar();
+    }).catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+  function cmdCrack(args) {
+    var alvo = (args[0] || "").toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(alvo))
+      return escreverConsola("uso: crack <hash-sha256> [<caminho-lista>]", "erro");
+    var lista = resolverCaminho(args[1] || "/lista-palavras.txt");
+    escreverConsola("a carregar lista...", "fraco");
+    fetch(lista).then(function (r) { return r.text(); }).then(function (t) {
+      var palavras = t.split(/\r?\n/).map(function (p) { return p.trim(); })
+                      .filter(Boolean);
+      escreverConsola(palavras.length + " palavras. a testar...", "fraco");
+      var i = 0;
+      function passo() {
+        if (i >= palavras.length) { escreverConsola("nenhuma bate com esse hash", "erro"); return; }
+        var p = palavras[i];
+        hashHex(p).then(function (h) {
+          if (h === alvo) { escreverConsola("ENCONTRADA: " + p, "ok"); return; }
+          i++; passo();
+        });
+      }
+      passo();
+    }).catch(function (e) { escreverConsola("falhou: " + e.message, "erro"); });
+  }
+
+  function correrComando(linha) {
+    var texto = linha.trim();
+    if (!texto) return;
+    escreverConsola("$ " + texto, "eco");
+    historico.unshift(texto); posHist = -1;
+    var partes = texto.split(/\s+/);
+    var cmd = partes[0].toLowerCase();
+    var args = partes.slice(1);
+    var resto = texto.slice(partes[0].length).trim();
+    switch (cmd) {
+      case "ajuda": case "help": case "?": AJUDA.forEach(function (l) { escreverConsola(l); }); break;
+      case "limpar": case "clear": el.consolaSaida.textContent = ""; break;
+      case "fechar": case "exit": fecharConsola(); break;
+      case "get": cmdGet(args); break;
+      case "headers": case "head": cmdHeaders(args); break;
+      case "post": cmdPost(args, resto); break;
+      case "curl": cmdCurl(resto); break;
+      case "b64d": case "base64d": cmdB64d(resto); break;
+      case "b64e": case "base64e": cmdB64e(resto); break;
+      case "hex": cmdHex(resto); break;
+      case "rot": cmdRot(args, resto); break;
+      case "rot13": escreverConsola(rodar(resto, 13)); break;
+      case "vigenere": case "vig": cmdVigenere(args, resto); break;
+      case "sha256": case "sha": cmdSha256(resto); break;
+      case "pin": cmdPin(args); break;
+      case "crack": cmdCrack(args); break;
+      default: escreverConsola("comando desconhecido: " + cmd + "  (escreve ajuda)", "erro");
+    }
+  }
+
+  /* ── Janela "Instalar" (QR do próprio endereço do jogo) ──────────── */
+  var qrDesenhado = false;
+  function abrirInstalar() {
+    var url = new URL("./", location.href).href;   // o endereço público do jogo
+    el.instalarUrl.textContent = url;
+    if (!qrDesenhado && window.CTF_QR) {
+      try { el.instalarQr.innerHTML = window.CTF_QR.svg(url, 4); qrDesenhado = true; }
+      catch (e) { el.instalarQr.textContent = "(não foi possível gerar o QR)"; }
+    }
+    // se o browser deixar instalar aqui mesmo, mostra o botão
+    el.instalarAgora.hidden = !eventoInstalar;
+    el.instalarFundo.hidden = false;
+  }
+  function fecharInstalar() { el.instalarFundo.hidden = true; }
+
   /* ── Ligações ────────────────────────────────────────────────── */
+  el.abrirInstalar.addEventListener("click", abrirInstalar);
+  el.instalarFechar.addEventListener("click", fecharInstalar);
+  el.instalarFundo.addEventListener("click", function (e) {
+    if (e.target === el.instalarFundo) fecharInstalar();
+  });
+  el.instalarAgora.addEventListener("click", function () {
+    if (!eventoInstalar) return;
+    eventoInstalar.prompt();
+    eventoInstalar.userChoice.finally(function () {
+      eventoInstalar = null;
+      el.instalar.hidden = true;
+      el.instalarAgora.hidden = true;
+    });
+  });
+  el.consolaFechar.addEventListener("click", fecharConsola);
+  el.abrirConsola.addEventListener("click", abrirConsola);
+  el.consolaFundo.addEventListener("click", function (e) {
+    if (e.target === el.consolaFundo) fecharConsola();
+  });
+  el.consolaEntrada.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { correrComando(el.consolaEntrada.value); el.consolaEntrada.value = ""; }
+    else if (e.key === "ArrowUp") {
+      if (posHist < historico.length - 1) { posHist++; el.consolaEntrada.value = historico[posHist]; }
+      e.preventDefault();
+    } else if (e.key === "ArrowDown") {
+      if (posHist > 0) { posHist--; el.consolaEntrada.value = historico[posHist]; }
+      else { posHist = -1; el.consolaEntrada.value = ""; }
+      e.preventDefault();
+    } else if (e.key === "Escape") { fecharConsola(); }
+  });
+
   el.enviar.addEventListener("click", validar);
   el.resposta.addEventListener("keydown", function (e) { if (e.key === "Enter") validar(); });
   el.copiar.addEventListener("click", function () {
@@ -475,9 +757,11 @@
   el.descarregar.addEventListener("click", descarregarJogo);
   document.addEventListener("keydown", function (e) {
     if (e.target === el.resposta) return;
+    if (e.target === el.consolaEntrada) return;
     if (e.key === "F1") { e.preventDefault(); pedirPista(); }
     if (e.key === "F2") { e.preventDefault(); irPara(estado.activo - 1); }
     if (e.key === "F3") { e.preventDefault(); irPara(estado.activo + 1); }
+    if (e.key === "F4") { e.preventDefault(); el.consolaFundo.hidden ? abrirConsola() : fecharConsola(); }
   });
   window.addEventListener("online", actualizarRede);
   window.addEventListener("offline", actualizarRede);

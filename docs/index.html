@@ -32,8 +32,9 @@
 
   <header class="barra-menu">
     <span class="nome-programa">CTF.EXE</span>
-    <span class="versao">v2.1 · pwa</span>
+    <span class="versao">v3.0 · pwa</span>
     <button class="botao-instalar" id="instalar" type="button" hidden>Instalar</button>
+    <button class="botao-instalar" id="abrir-instalar" type="button">Instalar</button>
     <span class="destinatario" id="destinatario"></span>
   </header>
 
@@ -75,11 +76,45 @@
     <button class="tecla" id="tecla-pista" type="button"><span class="f">F1</span> Pista</button>
     <button class="tecla" id="tecla-anterior" type="button"><span class="f">F2</span> Anterior</button>
     <button class="tecla" id="tecla-seguinte" type="button"><span class="f">F3</span> Seguinte</button>
+    <button class="tecla" id="abrir-consola" type="button"><span class="f">F4</span> Consola</button>
     <button class="tecla" id="descarregar" type="button">Descarregar .zip</button>
     <button class="tecla" id="tecla-reset" type="button">Recomeçar</button>
   </footer>
 
 </main>
+
+<div class="consola-fundo" id="instalar-fundo" hidden>
+  <section class="instalar-janela" role="dialog" aria-label="Instalar o jogo">
+    <header class="consola-barra">
+      <span class="consola-titulo">instalar CTF.EXE</span>
+      <button class="consola-fechar" id="instalar-fechar" type="button" aria-label="Fechar">✕</button>
+    </header>
+    <div class="instalar-corpo">
+      <div class="qr-caixa" id="instalar-qr" aria-label="Código QR para abrir o jogo"></div>
+      <div class="instalar-texto">
+        <p class="instalar-passo"><strong>No telemóvel:</strong> aponta a câmara ao código e abre o link.</p>
+        <p class="instalar-passo">Depois, no menu do browser, escolhe <em>“Instalar aplicação”</em> ou <em>“Adicionar ao ecrã principal”</em>. Fica a funcionar offline.</p>
+        <p class="instalar-url" id="instalar-url"></p>
+        <button class="botao-instalar" id="instalar-agora" type="button" hidden>Instalar aqui</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="consola-fundo" id="consola-fundo" hidden>
+  <section class="consola" id="consola" role="dialog" aria-label="Consola do jogo">
+    <header class="consola-barra">
+      <span class="consola-titulo">consola — superfície de ataque local</span>
+      <button class="consola-fechar" id="consola-fechar" type="button" aria-label="Fechar consola">✕</button>
+    </header>
+    <pre class="consola-saida" id="consola-saida" aria-live="polite"></pre>
+    <div class="consola-linha">
+      <span class="consola-prompt">$</span>
+      <input id="consola-entrada" class="consola-entrada" type="text" autocomplete="off"
+             spellcheck="false" placeholder="escreve  ajuda  e carrega Enter">
+    </div>
+  </section>
+</div>
 
 <div class="final" id="final" hidden>
   <pre class="bolo" id="bolo"></pre>
@@ -87,6 +122,7 @@
   <p class="assinatura" id="assinatura"></p>
 </div>
 
+<script src="qr.js"></script>
 <script src="jogo.js"></script>
 </body>
 </html>

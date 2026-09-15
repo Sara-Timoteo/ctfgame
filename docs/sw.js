@@ -9,7 +9,7 @@
  * client-side nunca está, e essa é uma das lições. O que conta é a técnica.
  */
 
-const CACHE = "ctf-exe-v4";
+const CACHE = "ctf-exe-v6";
 
 const APP_SHELL = [
   "./",
@@ -17,6 +17,7 @@ const APP_SHELL = [
   "./convite.html",
   "./estilo.css",
   "./jogo.js",
+  "./qr.js",
   "./manifest.webmanifest",
   "./lista-palavras.txt",
   "./icones/icone-192.png",
